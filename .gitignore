@@ -1,0 +1,20 @@
+# Local .terraform directories
+.terraform/
+
+# State files
+terraform.tfstate
+terraform.tfstate.backup
+
+# Crash logs
+crash.log
+
+# Plan files
+*.tfplan
+
+# Override files
+override.tf
+*_override.tf
+
+# Sensitive variable files
+terraform.tfvars
+*.auto.tfvars
