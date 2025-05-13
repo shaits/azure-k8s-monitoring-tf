@@ -1,26 +1,14 @@
-# Generate random resource group name
-resource "random_pet" "rg_name" {
-  prefix = var.resource_group_name_prefix
-}
 
 resource "azurerm_resource_group" "rg" {
   location = var.resource_group_location
-  name     = random_pet.rg_name.id
-}
-
-resource "random_pet" "azurerm_kubernetes_cluster_name" {
-  prefix = "cluster"
-}
-
-resource "random_pet" "azurerm_kubernetes_cluster_dns_prefix" {
-  prefix = "dns"
+  name     = var.resource_group_name
 }
 
 resource "azurerm_kubernetes_cluster" "k8s" {
   location            = azurerm_resource_group.rg.location
-  name                = random_pet.azurerm_kubernetes_cluster_name.id
+  name                = var.cluster_name
   resource_group_name = azurerm_resource_group.rg.name
-  dns_prefix          = random_pet.azurerm_kubernetes_cluster_dns_prefix.id
+  dns_prefix          = var.dns_prefix
 
   identity {
     type = "SystemAssigned"
@@ -28,7 +16,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
 
   default_node_pool {
     name       = "agentpool"
-    vm_size    = "Standard_B2s"
+    vm_size    = var.vm_size
     node_count = var.node_count
   }
   linux_profile {
