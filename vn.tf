@@ -53,10 +53,10 @@ resource "azurerm_route_table" "private_rt" {
   resource_group_name = azurerm_resource_group.rg.name
 }
 
-resource "azurerm_subnet_route_table_association" "private_assoc" {
-  subnet_id      = azurerm_subnet.private.id
-  route_table_id = azurerm_route_table.private_rt.id
-}
+# resource "azurerm_subnet_route_table_association" "private_assoc" {
+#   subnet_id      = azurerm_subnet.private.id
+#   route_table_id = azurerm_route_table.private_rt.id
+# }
 
 resource "azurerm_route" "default_internet" {
   name                   = "default-to-internet"
