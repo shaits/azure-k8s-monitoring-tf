@@ -12,8 +12,6 @@ resource "azurerm_bastion_host" "bastion" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  dns_name = "test-bastion-${random_id.dns.hex}"
-
   ip_configuration {
     name                 = "configuration"
     subnet_id            = azurerm_subnet.public.id
