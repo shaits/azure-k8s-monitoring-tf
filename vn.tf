@@ -19,19 +19,20 @@ resource "azurerm_subnet" "private" {
   address_prefixes     = ["10.0.2.0/24"]
 }
 
-resource "azurerm_nat_gateway" "nat" {
-  name                = "nat-gateway"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  sku_name            = "Standard"
-}
-
 resource "azurerm_public_ip" "nat_ip" {
   name                = "nat-ip"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
   sku                 = "Standard"
+}
+
+resource "azurerm_nat_gateway" "nat" {
+  name                = "nat-gateway"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  sku_name            = "Standard"
+  idle_timeout_in_minutes = 4
 }
 
 resource "azurerm_nat_gateway_public_ip_association" "nat_assoc" {
@@ -64,4 +65,34 @@ resource "azurerm_route" "default_internet" {
   address_prefix         = "0.0.0.0/0"
   next_hop_type          = "VirtualAppliance"
   next_hop_in_ip_address = "0.0.0.0"
+}
+
+
+# NSG for both subnets
+resource "azurerm_network_security_group" "nsg" {
+  name                = "allow-egress"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  security_rule {
+    name                       = "AllowOutboundInternet"
+    priority                   = 100
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+}
+
+resource "azurerm_subnet_network_security_group_association" "public" {
+  subnet_id                 = azurerm_subnet.public.id
+  network_security_group_id = azurerm_network_security_group.nsg.id
+}
+
+resource "azurerm_subnet_network_security_group_association" "private" {
+  subnet_id                 = azurerm_subnet.private.id
+  network_security_group_id = azurerm_network_security_group.nsg.id
 }
