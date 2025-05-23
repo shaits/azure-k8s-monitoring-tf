@@ -23,7 +23,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   dns_prefix          = var.dns_prefix
 
   identity {
-    type                      = "UserAssigned"
+    type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.aks_uami.id]
   }
 
@@ -42,11 +42,11 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     }
   }
   network_profile {
-  network_plugin      = "kubenet"
-  load_balancer_sku   = "standard"
-  service_cidr        = "10.240.0.0/16"
-  dns_service_ip      = "10.240.0.10"
-  outbound_type       = "loadBalancer"
+    network_plugin    = "kubenet"
+    load_balancer_sku = "standard"
+    service_cidr      = "10.240.0.0/16"
+    dns_service_ip    = "10.240.0.10"
+    outbound_type     = "loadBalancer"
   }
 
   depends_on = [
