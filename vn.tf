@@ -96,3 +96,15 @@ resource "azurerm_subnet_network_security_group_association" "private" {
   subnet_id                 = azurerm_subnet.private.id
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
+
+resource "azurerm_route_table" "public_rt" {
+  name                = "public-route-table"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+}
+
+resource "azurerm_subnet_route_table_association" "public_assoc" {
+  subnet_id      = azurerm_subnet.public.id
+  route_table_id = azurerm_route_table.public_rt.id
+}
+
