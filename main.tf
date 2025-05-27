@@ -46,7 +46,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     load_balancer_sku = "standard"
     service_cidr      = "10.240.0.0/16"
     dns_service_ip    = "10.240.0.10"
-    outbound_type     = "userDefinedRouting"
+    outbound_type     = "loadBalancer"
   }
 
   depends_on = [
