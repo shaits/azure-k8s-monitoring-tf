@@ -58,15 +58,11 @@ resource "azurerm_subnet_route_table_association" "private_assoc" {
   route_table_id = azurerm_route_table.private_rt.id
 }
 
-resource "azurerm_route" "default_nat" {
-  name                = "default-to-nat"
-  resource_group_name = azurerm_resource_group.rg.name
-  route_table_name    = azurerm_route_table.private_rt.name
-  address_prefix      = "0.0.0.0/0"
-  next_hop_type       = "Internet"
+
+resource "azurerm_subnet_route_table_association" "public_assoc" {
+  subnet_id      = azurerm_subnet.public.id
+  route_table_id = azurerm_route_table.private_rt.id
 }
-
-
 
 # NSG for both subnets
 resource "azurerm_network_security_group" "nsg" {
@@ -84,6 +80,18 @@ resource "azurerm_network_security_group" "nsg" {
     destination_port_range     = "*"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "AllowInboundHTTP"
+    priority                   = 200
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_address_prefix      = "*"
+    destination_port_range     = "80"
+    destination_address_prefix = "*"
+    source_port_range          = "*"
   }
 }
 
