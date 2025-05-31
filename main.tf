@@ -10,12 +10,6 @@ resource "azurerm_user_assigned_identity" "aks_uami" {
   resource_group_name = azurerm_resource_group.rg.name
 }
 
-resource "azurerm_role_assignment" "aks_route_table_access" {
-  principal_id         = azurerm_user_assigned_identity.aks_uami.principal_id
-  role_definition_name = "Contributor"
-  scope                = azurerm_route_table.private_rt.id
-}
-
 resource "azurerm_kubernetes_cluster" "k8s" {
   location            = azurerm_resource_group.rg.location
   name                = var.cluster_name
@@ -49,8 +43,8 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     outbound_type     = "loadBalancer"
   }
 
-  depends_on = [
-    azurerm_subnet_route_table_association.private_assoc
-  ]
+  # depends_on = [
+  #   azurerm_subnet_route_table_association.private_assoc
+  # ]
 
 }

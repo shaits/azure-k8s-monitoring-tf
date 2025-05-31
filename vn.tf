@@ -46,24 +46,6 @@ resource "azurerm_subnet_nat_gateway_association" "private_nat" {
   nat_gateway_id = azurerm_nat_gateway.nat.id
 }
 
-
-resource "azurerm_route_table" "private_rt" {
-  name                = "private-route-table"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-}
-
-resource "azurerm_subnet_route_table_association" "private_assoc" {
-  subnet_id      = azurerm_subnet.private.id
-  route_table_id = azurerm_route_table.private_rt.id
-}
-
-
-resource "azurerm_subnet_route_table_association" "public_assoc" {
-  subnet_id      = azurerm_subnet.public.id
-  route_table_id = azurerm_route_table.private_rt.id
-}
-
 # NSG for both subnets
 resource "azurerm_network_security_group" "nsg" {
   name                = "allow-egress"
@@ -104,3 +86,5 @@ resource "azurerm_subnet_network_security_group_association" "private" {
   subnet_id                 = azurerm_subnet.private.id
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
+
+
